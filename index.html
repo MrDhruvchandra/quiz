@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz app</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Times New Roman', Times, serif;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: #001e4d;
+            padding: 1px;
+            height: 704px;
+
+
+        }
+
+        .app {
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            margin: 100px auto 0;
+            border-radius: 10px;
+            padding: 82px;
+            position: relative;
+
+
+        }
+
+        .app h1 {
+            font-size: 25px;
+            color: #001e4d;
+            font-weight: 600;
+            border-bottom: 1px solid #333;
+            padding-bottom: 30px;
+
+        }
+
+        .quiz {
+            padding: 20px 0;
+
+        }
+
+        .quiz h2 {
+            font: size 18px;
+            color: #001e4d;
+            font-weight: 600;
+
+        }
+
+        .btn {
+            background: #fff;
+            color: #001e4d;
+            font-weight: 500;
+            width: 100%;
+            border: 1px solid #222;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            border-radius: 4px;
+            cursor: pointer;
+
+
+        }
+
+        .btn:hover:not([disabled]) {
+            background: #222;
+            color: #fff;
+
+        }
+
+        .btn:disabled {
+            cursor: no-drop;
+        }
+
+        #next-btn {
+            background: #001e4d;
+            color: #70c2d4;
+            font-weight: 500;
+            width: 150px;
+            border: 0;
+            padding: 10px;
+            margin: 20px auto 0;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+
+        }
+
+        .correct {
+            background: #60f9a3;
+        }
+
+        .incorrect {
+            background: #e16c48;
+        }
+
+        footer {
+            background: #111;
+            width: auto;
+            text-align: center;
+            height: 41px;
+
+        }
+
+        .cc div {
+            color: #fff;
+            text-align: center;
+
+        }
+
+        @media(max-width:1600px) {
+
+            .container {
+                background: #001e4d;
+                padding: 1px;
+                height: 972px;
+
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="app">
+            <h1>Simple Quiz</h1>
+            <div class="quiz">
+                <h2 id="question">Questions</h2>
+            </div>
+            <div id="answer-buttons">
+                <button class="btn">answer1</button>
+                <button class="btn">answer2</button>
+                <button class="btn">answer3</button>
+                <button class="btn">answer4</button>
+            </div>
+            <button id="next-btn" onclick=" ">Next</button>
+        </div>
+    </div>
+    <div>
+        <footer class="cc">
+            <!-- <div class="c1">
+    <a target="blank" href="https://www.instagram.com/" title="Instagram" class="text-black"></a>
+    <a target="blank" href=" https://www.facebook.com/home.php" title="Facebook" class="text-black"></a>
+    <a target="blank" href="https://www.linkedin.com/feed/" title="Linkedin" class="text-black"></a>
+        </div> -->
+            <div>
+                <p> Mr.DHRUVA❤️❤️&copy;2023. All Rights Reserved.</p>
+            </div>
+            <!-- <div>
+            <a href="">Privacy Policy</a>
+            <a href="">Terms and Service</a>
+            <a href="">Contact</a>
+        </div> -->
+        </footer>
+    </div>
+    <script>
+        const Questions = [
+            {
+                question: "Which is the largest animal in the world?",
+                answers: [
+                    { text: "Lion", correct: false },
+                    { text: "Elephant", correct: false },
+                    { text: "Blue Whale", correct: true },
+                    { text: "Shark", correct: false },
+                ]
+            },
+            {
+                question: "What is the capital of France?",
+                answers: [
+                    { text: "London", correct: false },
+                    { text: "Paris", correct: true },
+                    { text: "Madrid", correct: false },
+                    { text: "Rome", correct: false },
+                ]
+            },
+            {
+                question: "What year did World War II end?",
+                answers: [
+                    { text: "1945", correct: true },
+                    { text: "1939", correct: false },
+                    { text: "1941", correct: false },
+                    { text: "1942", correct: false },
+                ]
+            },
+            {
+                question: "Who discovered gravity?",
+                answers: [
+                    { text: "Isaac Newton", correct: true },
+                    { text: "Albert Einstein", correct: false },
+                    { text: "Stephen Hawking", correct: false },
+                    { text: "Galileo Galilei", correct: false },
+                ]
+            }
+        ];
+
+        const questionElement = document.getElementById("question");
+        const answerButtons = document.getElementById("answer-buttons");
+        const nextButton = document.getElementById("next-btn");
+        let currentQuestionIndex = 0;
+        let score = 0;
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            nextButton.innerHTML = "Next";
+            showQuestion();
+        }
+        function showQuestion() {
+            resetState();
+            let currentQuestion = Questions[currentQuestionIndex];
+            let questionNo = currentQuestionIndex + 1;
+            questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+
+            currentQuestion.answers.forEach(answer => {
+                const button = document.createElement("button");
+                button.innerHTML = answer.text;
+                button.classList.add("btn");
+                answerButtons.appendChild(button);
+
+                // this will show the correct option 
+
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct;
+                }
+                button.addEventListener("click", selectAnswer);
+            });
+        }
+        //   this reset state functio will remove all options with answers 
+        function resetState() {
+            nextButton.style.display = "none";
+            while (answerButtons.firstChild) {
+                answerButtons.removeChild(answerButtons.firstChild);
+            }
+        }
+        function selectAnswer(e) {
+            const selectedBtn = e.target;
+            const isCorrect = selectedBtn.dataset.correct === "true";
+            if (isCorrect) {
+                selectedBtn.classList.add("correct");
+                score++;
+            } else {
+                selectedBtn.classList.add("incorrect");
+            }
+            // after choosing the option displaying Next button 
+            Array.from(answerButtons.children).forEach(button => {
+                if (button.dataset.correct === "true") {
+                    button.classList.add("correct");
+                }
+                button.disabled = true;
+            });
+            nextButton.style.display = " block";
+        }
+
+        function showScore() {
+            resetState();
+            questionElement.innerHTML = `You scored   ${score} out of ${Questions.length}`;
+            nextButton.innerHTML = " Play Again";
+            nextButton.style.display = " block";
+
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < Questions.length) {
+                showQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        nextButton.addEventListener("click", () => {
+            if (currentQuestionIndex < Questions.length) {
+                handleNextButton();
+            } else {
+                startQuiz();
+            }
+        })
+
+        startQuiz();
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
